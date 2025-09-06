@@ -5,8 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'replace-this-with-a-secure-key'
 DEBUG = True
-ALLOWED_HOSTS = [
-shemmee.pythonanywhere.com]
+ALLOWED_HOSTS = ['shemmee.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -29,7 +28,7 @@ MIDDLEWARE = [
     'ip_tracking.middleware.IPLoggingMiddleware',
 ]
 
-ROOT_URLCONF = 'alx_backend_security.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -47,7 +46,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'alx_backend_security.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 DATABASES = {
     'default': {
@@ -78,3 +77,4 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
