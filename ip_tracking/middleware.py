@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from django.http import HttpResponseForbidden
 
-from ipgeolocation import IpGeolocationAPI
+import requests
 from django.core.cache import cache
 
 class IPLoggingMiddleware(MiddlewareMixin):
@@ -19,12 +19,18 @@ class IPLoggingMiddleware(MiddlewareMixin):
 		geo_cache_key = f'geo_{ip}'
 		geo = cache.get(geo_cache_key)
 		if not geo:
-			api = IpGeolocationAPI()
-			geo_data = api.get_geolocation(ip_address=ip)
-			country = geo_data.get('country_name', '')
-			city = geo_data.get('city', '')
-			geo = {'country': country, 'city': city}
-			cache.set(geo_cache_key, geo, 60 * 60 * 24)
+			try:
+				response = requests.get(f'https://ipinfo.io/{ip}/json')
+				if response.status_code == 200:
+					geo_data = response.json()
+					country = geo_data.get('country', '')
+					city = geo_data.get('city', '')
+					geo = {'country': country, 'city': city}
+					cache.set(geo_cache_key, geo, 60 * 60 * 24)
+				else:
+					geo = {'country': '', 'city': ''}
+			except Exception:
+				geo = {'country': '', 'city': ''}
 		country = geo.get('country', '')
 		city = geo.get('city', '')
 		RequestLog.objects.create(
